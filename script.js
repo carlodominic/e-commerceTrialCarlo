@@ -24,6 +24,7 @@ function magnify(imgID, zoom) {
   
     container.addEventListener("mousemove", moveMagnifier);
     container.addEventListener("touchmove", moveMagnifier);
+    container.addEventListener("wheel", zoomMagnifier);
   
     function moveMagnifier(e) {
         var pos, x, y;
@@ -55,6 +56,19 @@ function magnify(imgID, zoom) {
         y = y - window.pageYOffset;
         return {x : x, y : y};
     }
+  
+    function zoomMagnifier(e) {
+        e.preventDefault();
+        var oldZoom = zoom; // store old zoom level
+        zoom += e.deltaY * -0.01;
+        if (zoom < 1) {zoom = 1;}
+        if (zoom > 10) {zoom = 10;}
+        glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
+        glass.style.transition = "background-size 0.2s ease-out"; // add transition effect
+        setTimeout(function() { // remove transition effect after 0.2 seconds
+            glass.style.transition = "";
+        }, 200);
+    }
 }
 
-magnify(bigImg.id, 4); // call magnify function with initial image ID
+magnify(bigImg.id, 4);
